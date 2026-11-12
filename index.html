@@ -1,0 +1,948 @@
+<!doctype html>
+<html lang="vi">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Nguyễn Văn Chương | Quay, chụp, dựng video bất động sản</title>
+<meta name="description" content="Mình là Chương, làm media tại Công ty cổ phần địa ốc Đại Dương. Quay Pocket, quay Flycam, chụp ảnh và dựng video bất động sản cho môi giới xây kênh.">
+<meta name="theme-color" content="#0b0f14">
+<meta name="color-scheme" content="dark">
+<meta name="format-detection" content="telephone=no">
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' rx='5' fill='%230b0f14'/%3E%3Cpath d='M8 13V8h5M24 13V8h-5M8 19v5h5M24 19v5h-5' fill='none' stroke='%23c9a45c' stroke-width='2'/%3E%3C/svg%3E">
+<script>document.documentElement.className+=' js';</script>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Be+Vietnam+Pro:wght@400;500;600&family=Fraunces:opsz,wght,SOFT,WONK@9..144,600,0,0&display=swap" rel="stylesheet">
+<style>
+/* ================= Tokens ================= */
+:root{
+  --bg:#0b0f14; --bg-2:#0e141b; --black:#010203;
+  --text:#ece8de; --text-2:#c8c4b9; --muted:#9a968b; --dim:#8f8b80;
+  --accent:#c9a45c; --accent-2:#dbb978; --ink:#0b0f14;
+  --line:rgba(236,232,222,.12); --line-2:rgba(236,232,222,.24);
+  --serif:"Fraunces","Iowan Old Style","Palatino Linotype",Palatino,Georgia,"Times New Roman",serif;
+  --sans:"Be Vietnam Pro",system-ui,-apple-system,"Segoe UI",Roboto,"Helvetica Neue",Arial,sans-serif;
+  --mono:ui-monospace,"SF Mono",SFMono-Regular,Menlo,Consolas,"Liberation Mono",monospace;
+  --gut:20px;
+  --lb:clamp(20px,3vw,40px);
+  --sec:clamp(72px,11vw,136px);
+  --dock:calc(76px + env(safe-area-inset-bottom,0px));
+  --ease:cubic-bezier(.2,.65,.2,1);
+}
+
+/* ================= Base ================= */
+*,*::before,*::after{box-sizing:border-box}
+html{background:var(--bg);color-scheme:dark;-webkit-text-size-adjust:100%;text-size-adjust:100%;scroll-padding-top:24px;scroll-padding-bottom:calc(var(--dock) + 16px)}
+@media (prefers-reduced-motion:no-preference){html{scroll-behavior:smooth}}
+body{margin:0;background:linear-gradient(180deg,var(--bg) 0,var(--bg-2) 100%);color:var(--text-2);font:400 1rem/1.7 var(--sans);font-synthesis:none;overflow-x:clip;-webkit-font-smoothing:antialiased;-moz-osx-font-smoothing:grayscale;text-rendering:optimizeLegibility}
+img,svg{max-width:100%}
+img{display:block;height:auto}
+iframe{display:block;max-width:100%;border:0}
+h1,h2,h3,p,ul,figure{margin:0}
+ul{padding:0;list-style:none}
+a{color:inherit}
+main{position:relative;display:block}
+section{position:relative;padding-top:var(--sec)}
+.wrap{width:100%;max-width:1200px;margin:0 auto;padding:0 var(--gut)}
+.sr{position:absolute;width:1px;height:1px;margin:-1px;padding:0;overflow:hidden;clip:rect(0 0 0 0);clip-path:inset(50%);white-space:nowrap;border:0}
+::selection{background:rgba(201,164,92,.32);color:#fff}
+:focus-visible{outline:2px solid var(--accent);outline-offset:3px}
+.skip{position:fixed;left:12px;top:-80px;z-index:100;padding:12px 16px;border-radius:5px;background:var(--accent);color:var(--ink);font-weight:600;text-decoration:none}
+.skip:focus{top:12px}
+.skip:focus-visible{outline-color:var(--text)}
+
+/* ================= Lớp cố định: tiến độ, vignette, hạt phim, thanh email ================= */
+.prog{position:fixed;top:0;left:0;right:0;height:2px;z-index:90;background:rgba(236,232,222,.08);pointer-events:none}
+.prog i{display:block;height:100%;background:var(--accent);transform:scaleX(0);transform-origin:0 50%;will-change:transform}
+.vig{position:fixed;top:0;right:0;bottom:0;left:0;z-index:0;pointer-events:none;background:radial-gradient(ellipse 110% 85% at 50% 40%,transparent 55%,rgba(0,0,0,.42) 100%)}
+.gr{position:fixed;top:0;right:0;bottom:0;left:0;z-index:40;pointer-events:none;overflow:hidden}
+.gr i{position:absolute;top:-30px;right:-30px;bottom:-30px;left:-30px;opacity:.07;background-size:200px 200px;animation:grain 1.1s steps(1,end) infinite;
+  background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='200' height='200'%3E%3Cfilter id='n' x='0' y='0' width='100%25' height='100%25' color-interpolation-filters='sRGB'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.85' numOctaves='2' seed='9' stitchTiles='stitch'/%3E%3CfeColorMatrix values='0 0 0 0 1 0 0 0 0 1 0 0 0 0 1 2.6 0 0 0 -1.05'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E")}
+@keyframes grain{
+  0%{transform:translate(0,0)}
+  20%{transform:translate(-18px,10px)}
+  40%{transform:translate(12px,-22px)}
+  60%{transform:translate(-8px,18px)}
+  80%{transform:translate(22px,6px)}
+}
+.dock{position:fixed;left:0;right:0;bottom:0;z-index:70;padding:10px var(--gut) calc(10px + env(safe-area-inset-bottom,0px));background:rgba(11,15,20,.92);-webkit-backdrop-filter:blur(10px);backdrop-filter:blur(10px);border-top:1px solid var(--line)}
+.dock .btn{display:flex;width:100%;max-width:520px;margin:0 auto}
+
+/* ================= Đầu mục: số thứ tự + đường kẻ timeline ================= */
+.sh{display:flex;align-items:center;gap:16px;margin-bottom:clamp(28px,5vw,56px)}
+.sh .no{font:600 .8125rem/1 var(--sans);letter-spacing:.2em;color:var(--accent);font-variant-numeric:tabular-nums}
+.sh .rule{position:relative;flex:1;height:1px;background:var(--line);transform-origin:0 50%}
+.sh .rule::before{content:"";position:absolute;left:0;top:0;width:44px;height:1px;background:var(--accent)}
+.sh .rule::after{content:"";position:absolute;left:0;right:0;top:1px;height:5px;
+  background:repeating-linear-gradient(90deg,rgba(236,232,222,.2) 0 1px,transparent 1px 12px);
+  -webkit-mask-image:linear-gradient(90deg,#000 0,transparent 78%);mask-image:linear-gradient(90deg,#000 0,transparent 78%)}
+
+/* ================= Chữ ================= */
+h1{font:600 clamp(2.5rem,1.5rem + 4.4vw,5.25rem)/1.1 var(--serif);letter-spacing:-.02em;color:var(--text)}
+h1 span{display:block}
+h2{font:600 clamp(1.75rem,1.2rem + 2.2vw,2.625rem)/1.16 var(--serif);letter-spacing:-.015em;color:var(--text);text-wrap:balance;overflow-wrap:break-word}
+h3{font-weight:600}
+.mb{margin-bottom:clamp(28px,4.5vw,48px)}
+.note{max-width:62ch;margin-top:28px;padding-left:16px;border-left:1px solid var(--line-2);color:var(--muted)}
+
+/* ================= Nút ================= */
+.btn{display:inline-flex;align-items:center;justify-content:center;gap:10px;min-height:50px;padding:0 26px;border:1px solid var(--accent);border-radius:5px;background:var(--accent);color:var(--ink);font:600 1rem/1.2 var(--sans);letter-spacing:.01em;text-decoration:none;text-align:center;transition:background-color .2s var(--ease),border-color .2s var(--ease),color .2s var(--ease)}
+.btn:active{transform:translateY(1px)}
+.btn svg{flex:none;width:16px;height:16px}
+.btn-ghost{min-height:46px;padding:0 18px;background:transparent;color:var(--text);border-color:var(--line-2)}
+@media (hover:hover){
+  .btn:hover{background:var(--accent-2);border-color:var(--accent-2)}
+  .btn-ghost:hover{background:rgba(201,164,92,.08);border-color:var(--accent);color:var(--accent-2)}
+}
+
+/* ================= 01 · Hero ================= */
+.hero{padding:calc(var(--lb) + clamp(28px,6vw,64px)) 0 calc(var(--lb) + clamp(56px,9vw,96px));
+  background:radial-gradient(60% 55% at 84% 30%,rgba(201,164,92,.07),transparent 70%),radial-gradient(55% 50% at 6% 92%,rgba(80,110,140,.09),transparent 70%)}
+.lb{position:absolute;left:0;right:0;z-index:2;height:var(--lb);background:var(--black)}
+.lb-t{top:0;border-bottom:1px solid rgba(236,232,222,.09)}
+.lb-b{bottom:0;border-top:1px solid rgba(236,232,222,.09)}
+.lb .wrap{height:100%;display:flex;align-items:center;justify-content:flex-end}
+.tc{font:500 .6875rem/1 var(--mono);letter-spacing:.14em;color:var(--dim);font-variant-numeric:tabular-nums;white-space:nowrap}
+.hero-grid{display:grid;grid-template-columns:minmax(0,1fr);gap:clamp(36px,8vw,52px)}
+.tag{max-width:30ch;margin-top:clamp(18px,3vw,26px);font:500 clamp(1.125rem,1rem + .6vw,1.4rem)/1.45 var(--sans);color:var(--text)}
+.tag::before{content:"";display:inline-block;width:28px;height:1px;margin-right:14px;vertical-align:middle;background:var(--accent)}
+.lead{max-width:46ch;margin-top:18px;font-size:1.0625rem;color:var(--text-2)}
+.cta{display:flex;flex-direction:column;align-items:flex-start;gap:14px;margin-top:clamp(26px,4vw,36px)}
+.zl{color:var(--muted)}
+.hero-media{width:84%;margin-left:auto}
+.vf{--c:rgba(201,164,92,.85);--l:18px;position:relative;padding:12px;
+  background:
+    linear-gradient(var(--c),var(--c)) left top/var(--l) 1px,
+    linear-gradient(var(--c),var(--c)) left top/1px var(--l),
+    linear-gradient(var(--c),var(--c)) right top/var(--l) 1px,
+    linear-gradient(var(--c),var(--c)) right top/1px var(--l),
+    linear-gradient(var(--c),var(--c)) left bottom/var(--l) 1px,
+    linear-gradient(var(--c),var(--c)) left bottom/1px var(--l),
+    linear-gradient(var(--c),var(--c)) right bottom/var(--l) 1px,
+    linear-gradient(var(--c),var(--c)) right bottom/1px var(--l);
+  background-repeat:no-repeat}
+.ph{position:relative;overflow:hidden;border:1px solid rgba(236,232,222,.14);border-radius:3px;background:#1b2027;box-shadow:0 40px 70px -34px rgba(0,0,0,.85),0 14px 30px -14px rgba(0,0,0,.6)}
+.ph img{width:100%;height:auto;aspect-ratio:4/5;object-fit:cover;filter:brightness(.84) contrast(1.05) saturate(.94)}
+.ph::after{content:"";position:absolute;top:0;right:0;bottom:0;left:0;pointer-events:none;
+  background:radial-gradient(75% 62% at 50% 42%,transparent 38%,rgba(5,7,10,.62) 100%),linear-gradient(180deg,transparent 68%,rgba(5,7,10,.35));
+  box-shadow:inset 0 0 0 1px rgba(255,255,255,.06)}
+
+/* ================= 02 · Con số ================= */
+.stats{display:grid;grid-template-columns:minmax(0,1fr);gap:0}
+.stat{padding:28px 0 36px;border-top:1px solid var(--line)}
+.fig{display:block}
+.fig .k{display:block;font:600 .875rem/1.4 var(--sans);letter-spacing:.22em;text-transform:uppercase;color:var(--accent)}
+.fig .big{display:block;margin:12px 0 10px;font:600 clamp(3.25rem,2rem + 5vw,5rem)/1 var(--serif);letter-spacing:-.03em;color:var(--text);font-variant-numeric:lining-nums tabular-nums;white-space:nowrap}
+.fig .u{display:block;font:500 .875rem/1.5 var(--sans);letter-spacing:.18em;text-transform:uppercase;color:var(--text-2)}
+.stat p{max-width:40ch;margin-top:18px}
+
+/* ================= Khối tiêu đề + nội dung (03, 05, 06, 07, 08) ================= */
+.g12{display:grid;grid-template-columns:minmax(0,1fr);gap:28px}
+.hd{font-size:clamp(1.75rem,1.2rem + 1.6vw,2.375rem)}
+.svc li,.pj,.row,.fit li{position:relative;padding:26px 0;border-top:1px solid var(--line)}
+.svc li:last-child,.pj:last-child,.rows,.fit li:last-child{border-bottom:1px solid var(--line)}
+.rows{border-top:0}
+.stat,.closing{position:relative}
+.stat::before,.closing::before,.svc li:first-child::before,.pj:first-child::before,.row:first-child::before,.fit li:first-child::before{content:"";position:absolute;left:0;top:-1px;width:44px;height:1px;background:var(--accent);z-index:1}
+
+/* 03 · Mình làm gì */
+.svc h3{margin-bottom:8px;font:600 1.375rem/1.25 var(--serif);letter-spacing:-.005em;color:var(--text)}
+.closing{margin-top:8px;padding-top:22px;border-top:1px solid var(--line);font:600 clamp(1.25rem,1.05rem + .8vw,1.5rem)/1.35 var(--serif);letter-spacing:-.005em;color:var(--text);text-wrap:balance}
+
+/* 04 · Video */
+.vids{display:grid;grid-template-columns:minmax(0,1fr);gap:44px}
+.mon{position:relative;z-index:41;padding:6px;background:#05080c;border:1px solid rgba(236,232,222,.12);border-radius:6px;box-shadow:inset 0 1px 0 rgba(255,255,255,.04),0 44px 60px -34px rgba(0,0,0,.9),0 18px 36px -20px rgba(0,0,0,.7)}
+.scr{position:relative;aspect-ratio:16/9;overflow:hidden;border-radius:3px;background:#000}
+@supports not (aspect-ratio:16/9){.scr{height:0;padding-top:56.25%}}
+.scr iframe{position:absolute;top:0;left:0;width:100%;height:100%;border:0}
+.vt{margin:16px 0 14px;font:500 1rem/1.45 var(--sans);letter-spacing:.005em;color:var(--text)}
+
+/* 05 · Dự án */
+.pj h3{margin-bottom:12px;font:600 clamp(1.375rem,1.2rem + .8vw,1.75rem)/1.2 var(--serif);letter-spacing:-.01em;color:var(--text)}
+.pj p+p{margin-top:10px}
+
+/* 06 · Kênh */
+.row{display:flex;align-items:center;justify-content:space-between;gap:16px;min-height:76px;padding:18px 0;color:var(--text);text-decoration:none}
+.row .nm{font:600 clamp(1.1875rem,1.05rem + .6vw,1.375rem)/1.3 var(--sans);letter-spacing:-.005em;overflow-wrap:anywhere;transition:color .2s var(--ease)}
+.row svg{flex:none;width:20px;height:20px;color:var(--accent);transition:transform .25s var(--ease)}
+@media (hover:hover){
+  .row:hover .nm{color:var(--accent-2)}
+  .row:hover svg{transform:translate(3px,-3px)}
+}
+
+/* 07 · Thiết bị: thẻ có biểu tượng chuyển động nhẹ */
+.gear{display:grid;grid-template-columns:minmax(0,1fr);gap:14px}
+.gear li{position:relative;display:grid;grid-template-columns:64px minmax(0,1fr);column-gap:18px;row-gap:2px;align-items:center;padding:20px;border:1px solid var(--line);border-radius:6px;background:linear-gradient(180deg,rgba(236,232,222,.04),rgba(236,232,222,.012));transition:border-color .3s var(--ease),background-color .3s var(--ease)}
+.gear .gi{grid-row:1/span 2;width:64px;height:64px;color:var(--accent);fill:none;stroke:currentColor;stroke-width:1.5;stroke-linecap:round;stroke-linejoin:round}
+.gear .n{font:600 1.1875rem/1.3 var(--sans);color:var(--text)}
+.gear .d{color:var(--muted);font-size:.9375rem;line-height:1.5}
+@media (hover:hover){.gear li:hover{border-color:rgba(201,164,92,.55);background:linear-gradient(180deg,rgba(201,164,92,.09),rgba(201,164,92,.02))}}
+.g-head{transform-origin:32px 22px;animation:tilt 3.8s ease-in-out infinite}
+.g-drone{animation:hov 3.4s ease-in-out infinite}
+.g-rot{transform-box:fill-box;transform-origin:center;animation:rot .55s ease-in-out infinite alternate}
+.g-rot:nth-of-type(even){animation-delay:-.27s}
+.g-ph{animation:scrub 4.2s ease-in-out infinite alternate}
+@keyframes tilt{0%,100%{transform:rotate(-8deg)}50%{transform:rotate(8deg)}}
+@keyframes hov{0%,100%{transform:translateY(0)}50%{transform:translateY(-2.5px)}}
+@keyframes rot{from{transform:scaleX(1)}to{transform:scaleX(.3)}}
+@keyframes scrub{from{transform:translateX(-13px)}to{transform:translateX(15px)}}
+
+/* 08 · Dành cho ai */
+.fit li{padding:24px 0}
+.fit .pri{padding-left:22px;font:500 clamp(1.1875rem,1.05rem + .7vw,1.4375rem)/1.45 var(--sans);color:var(--text)}
+.fit .pri::after{content:"";position:absolute;left:0;top:24px;bottom:24px;width:2px;background:var(--accent)}
+.fit .sec{color:var(--muted)}
+
+/* 09 · Liên hệ */
+.contact{padding-bottom:var(--sec)}
+.contact h2{font-size:clamp(2rem,1.2rem + 3vw,3.5rem)}
+.mail{display:inline-block;margin-top:10px;padding:14px 0;font:500 clamp(1rem,4.4vw,2rem)/1.3 var(--sans);letter-spacing:-.01em;color:var(--accent);overflow-wrap:anywhere;word-break:break-word;text-decoration:underline;text-decoration-color:rgba(201,164,92,.4);text-decoration-thickness:1px;text-underline-offset:8px;transition:color .2s var(--ease),text-decoration-color .2s var(--ease)}
+@media (hover:hover){.mail:hover{color:var(--accent-2);text-decoration-color:var(--accent-2)}}
+.ct{gap:20px}
+.ct-b{padding-top:22px;border-top:1px solid var(--line)}
+.zname{font:600 1.1875rem/1.4 var(--sans);color:var(--text)}
+.zhint{margin-top:4px;color:var(--muted)}
+.foot{position:relative;background:var(--black);border-top:1px solid rgba(236,232,222,.09);padding:22px 0 calc(22px + var(--dock));color:var(--muted)}
+.foot .wrap{display:flex;align-items:center;justify-content:space-between;gap:16px}
+
+/* ================= Chuyển động nhẹ ================= */
+.js .rv{opacity:0;transform:translateY(14px);transition:opacity .8s var(--ease),transform .8s var(--ease);transition-delay:calc(var(--i,0)*80ms)}
+.js .rv.in{opacity:1;transform:none}
+.js .sh .rule{transform:scaleX(0)}
+.js .sh.in .rule{transform:none;transition:transform 1.1s var(--ease) .1s}
+
+/* ================= Hiệu ứng điện ảnh & biểu đồ trực quan ================= */
+
+/* --- 01 · Hero: mở letterbox, kéo nét ảnh, khung lấy nét, tiêu đề trượt lên --- */
+.js .lb::after{content:"";position:absolute;left:0;right:0;height:12vh;background:var(--black);pointer-events:none;animation:lbopen 1.6s var(--ease) .1s both}
+.js .lb-t::after{top:100%;transform-origin:50% 0}
+.js .lb-b::after{bottom:100%;transform-origin:50% 100%}
+@keyframes lbopen{from{transform:scaleY(1)}to{transform:scaleY(0)}}
+.js .ph img{animation:fpull 2s var(--ease) .3s both}
+@keyframes fpull{
+  from{filter:blur(16px) brightness(.84) contrast(1.05) saturate(.94);transform:scale(1.07)}
+  to{filter:blur(0) brightness(.84) contrast(1.05) saturate(.94);transform:none}
+}
+.af,.g3{position:absolute;pointer-events:none;opacity:0}
+.af{--c:rgba(219,185,120,.95);--l:16px;left:51%;top:41%;width:46%;aspect-ratio:1/1;transform:translate(-50%,-50%);
+  background:
+    linear-gradient(var(--c),var(--c)) left top/var(--l) 1px,
+    linear-gradient(var(--c),var(--c)) left top/1px var(--l),
+    linear-gradient(var(--c),var(--c)) right top/var(--l) 1px,
+    linear-gradient(var(--c),var(--c)) right top/1px var(--l),
+    linear-gradient(var(--c),var(--c)) left bottom/var(--l) 1px,
+    linear-gradient(var(--c),var(--c)) left bottom/1px var(--l),
+    linear-gradient(var(--c),var(--c)) right bottom/var(--l) 1px,
+    linear-gradient(var(--c),var(--c)) right bottom/1px var(--l);
+  background-repeat:no-repeat}
+.g3{top:0;right:0;bottom:0;left:0;
+  background:
+    linear-gradient(rgba(236,232,222,.2),rgba(236,232,222,.2)) 33.333% 0/1px 100% no-repeat,
+    linear-gradient(rgba(236,232,222,.2),rgba(236,232,222,.2)) 66.666% 0/1px 100% no-repeat,
+    linear-gradient(rgba(236,232,222,.2),rgba(236,232,222,.2)) 0 33.333%/100% 1px no-repeat,
+    linear-gradient(rgba(236,232,222,.2),rgba(236,232,222,.2)) 0 66.666%/100% 1px no-repeat}
+.js .af{animation:afl 3.6s var(--ease) .6s both}
+.js .g3{animation:g3a 3.6s ease .6s both}
+@keyframes afl{
+  0%{opacity:0;transform:translate(-50%,-50%) scale(2)}
+  30%{opacity:1;transform:translate(-50%,-50%) scale(1)}
+  42%{transform:translate(-50%,-50%) scale(.95)}
+  54%{transform:translate(-50%,-50%) scale(1)}
+  80%{opacity:1}
+  100%{opacity:0;transform:translate(-50%,-50%) scale(1)}
+}
+@keyframes g3a{0%{opacity:0}20%,75%{opacity:1}100%{opacity:0}}
+.vf{transform:translate3d(0,var(--py,0px),0) perspective(900px) rotateX(var(--rx,0deg)) rotateY(var(--ry,0deg));transition:transform .22s ease-out}
+.js h1 .ln{overflow:hidden;padding:.22em 0 .16em;margin:-.22em 0 -.16em}
+.js h1 .ln .t{transform:translateY(112%);animation:lnup 1.1s var(--ease) .2s both}
+.js h1 .ln+.ln .t{animation-delay:.36s}
+@keyframes lnup{to{transform:none}}
+
+/* Tiêu đề phần: quét ngang như chữ đề trên phim */
+.js h2.rv{opacity:1;transform:none;clip-path:inset(-.14em 100% -.14em -.06em);transition:clip-path 1.05s var(--ease)}
+.js h2.rv.in{clip-path:inset(-.14em -.06em -.14em -.06em)}
+
+/* Con trỏ chuột: vệt sáng rất nhẹ, mục lục bên phải */
+.spot{position:fixed;left:0;top:0;width:560px;height:560px;margin:-280px 0 0 -280px;border-radius:50%;pointer-events:none;z-index:39;opacity:0;background:radial-gradient(circle,rgba(201,164,92,.1),rgba(201,164,92,.04) 38%,transparent 68%);mix-blend-mode:screen;transition:opacity .5s ease;will-change:transform}
+.spot.on{opacity:1}
+.rail{position:fixed;right:10px;top:50%;transform:translateY(-50%);z-index:60;display:none}
+.rail ol{margin:0;padding:0;list-style:none}
+.rail a{display:flex;align-items:center;justify-content:flex-end;gap:10px;height:30px;padding:0 4px;color:var(--dim);font:500 .6875rem/1 var(--mono);letter-spacing:.14em;text-decoration:none;transition:color .25s var(--ease)}
+.rail a::after{content:"";flex:none;width:10px;height:1px;background:currentColor;transition:width .3s var(--ease)}
+.rail b{font-weight:500;font-variant-numeric:tabular-nums}
+.rail em{font:500 .75rem/1 var(--sans);font-style:normal;letter-spacing:.02em;color:var(--text);white-space:nowrap;opacity:0;transform:translateX(6px);transition:opacity .25s var(--ease),transform .25s var(--ease);pointer-events:none}
+.rail a:hover,.rail a:focus-visible{color:var(--text)}
+.rail a:hover em,.rail a:focus-visible em{opacity:1;transform:none}
+.rail a[aria-current="true"]{color:var(--accent-2)}
+.rail a[aria-current="true"]::after{width:24px}
+
+/* --- 02 · Biểu đồ ký hiệu: 30 khung phim, 10 ngôi nhà --- */
+.pic{margin-top:22px}
+.pic-v{display:grid;grid-template-columns:repeat(10,minmax(0,1fr));gap:5px}
+.pic-v i{position:relative;display:block;aspect-ratio:16/11;border:1px solid var(--line-2);border-radius:2px;background:rgba(236,232,222,.03);transition:background-color .5s var(--ease),border-color .5s var(--ease);transition-delay:calc(var(--k,0)*46ms)}
+.pic-v i::after{content:"";position:absolute;left:50%;top:50%;width:28%;aspect-ratio:1/1;background:var(--accent-2);clip-path:polygon(0 0,100% 50%,0 100%);opacity:0;transform:translate(-38%,-50%) scale(.5);transition:opacity .5s var(--ease),transform .5s var(--ease);transition-delay:inherit}
+.stat.on .pic-v i{background:rgba(201,164,92,.17);border-color:rgba(201,164,92,.72)}
+.stat.on .pic-v i::after{opacity:.95;transform:translate(-38%,-50%) scale(1)}
+.pic-h{display:flex;justify-content:space-between;gap:6px}
+.pic-h svg{flex:1 1 0;min-width:0;max-width:46px;height:auto;aspect-ratio:1/1;opacity:0;transform:translateY(10px) scale(.82);transition:opacity .55s var(--ease),transform .55s var(--ease);transition-delay:calc(var(--k,0)*130ms)}
+.pic-h .h{fill:rgba(201,164,92,.26);stroke:var(--accent);stroke-width:1.3;stroke-linejoin:round}
+.pic-h .est .h{fill:none;stroke-dasharray:2.4 2.2;stroke-opacity:.8}
+.stat.on .pic-h svg{opacity:1;transform:none}
+.stat .lg{max-width:44ch;margin-top:12px;font-size:.875rem;line-height:1.6;color:var(--muted)}
+
+/* --- 02 · Sơ đồ: từ video đến giao dịch --- */
+.flow{margin-top:clamp(48px,7vw,88px)}
+.fh{margin-bottom:clamp(24px,4vw,40px);font:600 clamp(1.375rem,1.15rem + 1vw,1.75rem)/1.25 var(--serif);letter-spacing:-.01em;color:var(--text)}
+.fl{display:grid;grid-template-columns:minmax(0,1fr);margin:0;padding:0;list-style:none}
+.fs{position:relative;min-height:60px;padding:0 0 34px 58px;list-style:none}
+.fs:last-child{padding-bottom:0}
+.fn{position:absolute;left:0;top:0;z-index:1;display:grid;place-items:center;width:38px;height:38px;border:1px solid var(--line-2);border-radius:50%;background:var(--bg);font:600 .6875rem/1 var(--mono);letter-spacing:.06em;color:var(--dim);transition:border-color .5s var(--ease),background-color .5s var(--ease),color .5s var(--ease);transition-delay:calc(var(--i,0)*.55s)}
+.fs b{display:block;font:600 1.0625rem/1.35 var(--sans);color:var(--text)}
+.fs .fd{display:block;margin-top:4px;max-width:34ch;color:var(--muted);font-size:.9375rem;line-height:1.55}
+.fs .hl{color:var(--accent-2);font-weight:500}
+.conn{position:absolute;left:18px;top:42px;bottom:4px;width:1px;background:var(--line-2)}
+.conn::before{content:"";position:absolute;left:0;top:0;width:100%;height:100%;background:var(--accent);transform:scaleY(0);transform-origin:50% 0;transition:transform 1s var(--ease);transition-delay:calc(var(--i,0)*.55s + .25s)}
+.conn u{position:absolute;left:-1px;top:0;width:3px;height:14px;border-radius:2px;background:linear-gradient(to bottom,transparent,var(--accent-2));opacity:0}
+.flow.in .conn::before{transform:scaleY(1)}
+.flow.in .conn u{animation:flowy 2.6s linear infinite;animation-delay:calc(var(--i,0)*.55s + 1.4s)}
+.flow.in .fn{border-color:var(--accent);background:rgba(201,164,92,.1);color:var(--accent-2)}
+.flow.in .fs.fin .fn{background:var(--accent);color:var(--ink)}
+@keyframes flowy{0%{top:0;opacity:0}15%{opacity:1}85%{opacity:1}100%{top:calc(100% - 14px);opacity:0}}
+@keyframes flowx{0%{left:0;opacity:0}15%{opacity:1}85%{opacity:1}100%{left:calc(100% - 14px);opacity:0}}
+
+/* --- 03 · Dòng thời gian dựng phim --- */
+.c1{--c:201,164,92}.c2{--c:111,138,163}.c3{--c:190,176,150}
+.nle{--p:.3;--lab:30px;margin:clamp(40px,6vw,72px) 0 0;border:1px solid var(--line-2);border-radius:6px;background:linear-gradient(180deg,#0b1016,#070a0e);box-shadow:0 44px 70px -40px rgba(0,0,0,.9),inset 0 1px 0 rgba(255,255,255,.04);overflow:hidden}
+.nle-top{display:flex;align-items:center;justify-content:space-between;gap:12px;padding:11px 14px;border-bottom:1px solid var(--line);font:500 .6875rem/1.2 var(--mono);letter-spacing:.14em;text-transform:uppercase;color:var(--dim)}
+.nle-top .app{display:flex;align-items:center;gap:8px;white-space:nowrap}
+.nle-top .app::before{content:"";width:6px;height:6px;border-radius:50%;background:var(--accent)}
+.nle-top .now{flex:1;min-width:0;overflow:hidden;text-align:center;text-overflow:ellipsis;white-space:nowrap;text-transform:none;letter-spacing:.01em;font:500 .8125rem/1.3 var(--sans);color:var(--text)}
+.nle-top .tcx{color:var(--text-2);font-variant-numeric:tabular-nums;white-space:nowrap}
+.nle-body{display:grid;grid-template-columns:var(--lab) minmax(0,1fr);column-gap:10px;padding:12px 14px 14px}
+.labs,.lanes{display:grid;grid-auto-rows:min-content;row-gap:8px}
+.lanes{position:relative;touch-action:pan-y;cursor:ew-resize;-webkit-user-select:none;user-select:none}
+.sp,.ruler{height:16px}
+.ruler{background:
+  repeating-linear-gradient(90deg,rgba(236,232,222,.3) 0 1px,transparent 1px 4.1667%) 0 100%/100% 7px no-repeat,
+  repeating-linear-gradient(90deg,rgba(236,232,222,.55) 0 1px,transparent 1px 25%) 0 100%/100% 14px no-repeat}
+.r-q{height:46px}.r-a{height:30px}.r-s{height:36px}.r-c{height:18px}
+.lab{display:flex;align-items:center;gap:8px;color:var(--dim);font:500 .6875rem/1 var(--mono);letter-spacing:.1em;text-transform:uppercase}
+.lab svg{flex:none;width:16px;height:16px;color:var(--accent)}
+.lab span{display:none}
+.lane{position:relative;overflow:hidden;border-radius:3px;background:rgba(236,232,222,.035)}
+.clips{display:flex;gap:3px;height:100%}
+.clip{flex:0 0 auto;position:relative;display:flex;align-items:center;width:calc(var(--w,16)*1% - 2.5px);min-width:0;padding:0 8px;overflow:hidden;border:1px solid rgba(var(--c),.5);border-radius:2px;background:rgba(var(--c),.16);color:var(--text-2);font:500 .75rem/1.2 var(--sans);white-space:nowrap;transition:background-color .25s var(--ease),border-color .25s var(--ease),color .25s var(--ease),box-shadow .25s var(--ease)}
+.clip>em{display:none;min-width:0;overflow:hidden;font-style:normal;text-overflow:ellipsis}
+.clip.on{border-color:rgb(var(--c));background:rgba(var(--c),.4);color:#fff;box-shadow:0 0 0 1px rgba(var(--c),.3),0 8px 22px -10px rgba(var(--c),.9)}
+.still{position:absolute;top:3px;bottom:3px;left:var(--x);width:24px;overflow:hidden;border:1px solid rgba(111,138,163,.6);border-radius:2px;background:linear-gradient(135deg,rgba(111,138,163,.34),rgba(111,138,163,.08))}
+.still::after{content:"";position:absolute;left:4px;right:4px;bottom:3px;height:7px;background:rgba(111,138,163,.6);clip-path:polygon(0 100%,35% 15%,60% 70%,80% 35%,100% 100%)}
+.wave svg{position:absolute;top:0;left:0;display:block;width:100%;height:100%}
+.wave path{fill:none;stroke-width:1.6;stroke-linecap:round;vector-effect:non-scaling-stroke}
+.wave .b path{stroke:rgba(236,232,222,.26)}
+.wave .pl{clip-path:inset(0 calc(100% - var(--p)*100%) 0 0)}
+.wave .pl path{stroke:var(--accent-2)}
+.grade{position:absolute;top:0;right:0;bottom:0;left:0;background:linear-gradient(90deg,#2d3a4a 0,#4d6a86 22%,#8fa6bd 38%,#c9a45c 58%,#a8743f 76%,#4a3a30 100%)}
+.grade::after{content:"";position:absolute;top:0;right:0;bottom:0;left:0;background:linear-gradient(90deg,transparent calc(var(--p)*100%),rgba(7,10,14,.62) calc(var(--p)*100%))}
+.head{position:absolute;top:-2px;bottom:-2px;left:calc(var(--p)*100%);width:0;z-index:3;pointer-events:none}
+.head::before{content:"";position:absolute;top:0;bottom:0;left:-.5px;width:1px;background:var(--accent-2);box-shadow:0 0 10px rgba(219,185,120,.7)}
+.head::after{content:"";position:absolute;top:-1px;left:-6px;width:12px;height:10px;background:var(--accent-2);clip-path:polygon(0 0,100% 0,100% 55%,50% 100%,0 55%)}
+.leg{display:flex;flex-wrap:wrap;gap:8px 16px;margin:0;padding:12px 14px;border-top:1px solid var(--line);font-size:.875rem;line-height:1.4;color:var(--text-2)}
+.leg li{display:flex;align-items:center;gap:8px}
+.leg i{flex:none;width:10px;height:10px;border-radius:2px;background:rgba(var(--c),.9)}
+.cap{padding:12px 14px 14px;border-top:1px solid var(--line);font-size:.8125rem;line-height:1.55;color:var(--muted)}
+
+/* --- 05 · Dải phim các loại video --- */
+.strip-lab{margin:clamp(36px,5vw,56px) 0 12px;font:500 .6875rem/1.2 var(--mono);letter-spacing:.16em;text-transform:uppercase;color:var(--dim)}
+.strip{position:relative;padding:24px 0;overflow-x:auto;background:#06090d;border:1px solid var(--line);border-radius:4px;-webkit-mask-image:linear-gradient(90deg,transparent 0,#000 7%,#000 93%,transparent 100%);mask-image:linear-gradient(90deg,transparent 0,#000 7%,#000 93%,transparent 100%);scrollbar-width:none}
+.strip::-webkit-scrollbar{display:none}
+.strip::before,.strip::after{content:"";position:absolute;left:0;right:0;height:7px;pointer-events:none;opacity:.5;background:repeating-linear-gradient(90deg,transparent 0 6px,rgba(236,232,222,.55) 6px 16px,transparent 16px 26px)}
+.strip::before{top:8px}
+.strip::after{bottom:8px}
+.strip-track{display:flex;gap:12px;width:max-content;padding:0 12px}
+.strip-track.run{padding:0 12px 0 0;animation:marq 52s linear infinite}
+.strip:hover .strip-track.run{animation-play-state:paused}
+@keyframes marq{to{transform:translateX(-50%)}}
+.frame{flex:none;display:flex;flex-direction:column;justify-content:space-between;width:176px;height:108px;padding:12px;border:1px solid var(--line-2);border-radius:3px;background:linear-gradient(160deg,rgba(201,164,92,.1),rgba(111,138,163,.06) 60%,transparent)}
+.frame small{font:500 .6875rem/1 var(--mono);letter-spacing:.14em;color:var(--accent)}
+.frame b{font:600 1.0625rem/1.3 var(--serif);letter-spacing:-.005em;color:var(--text)}
+
+/* --- 04 · Màn hình video bật lên như mở ống kính --- */
+.js .vid .scr{clip-path:inset(48% 0 48% 0);transition:clip-path 1.1s var(--ease);transition-delay:calc(var(--i,0)*.18s + .2s)}
+.js .vid.in .scr{clip-path:inset(0 0 0 0)}
+.mon{transition:box-shadow .35s var(--ease)}
+@media (hover:hover){.mon:hover{box-shadow:inset 0 1px 0 rgba(255,255,255,.04),0 0 0 1px rgba(201,164,92,.28),0 44px 60px -34px rgba(0,0,0,.9),0 18px 36px -20px rgba(0,0,0,.7),0 0 46px -12px rgba(201,164,92,.22)}}
+
+/* --- Điều chỉnh theo cỡ màn hình cho các khối mới --- */
+@media (min-width:600px){
+  .gear{grid-template-columns:repeat(3,minmax(0,1fr))}
+  .gear li{grid-template-columns:minmax(0,1fr);row-gap:8px;align-items:start;padding:24px 22px}
+  .gear .gi{grid-row:auto;width:72px;height:72px;margin-bottom:8px}
+}
+@media (min-width:760px){
+  .nle{--lab:112px}
+  .lab span{display:inline}
+  .clip>em{display:block}
+  .leg{position:absolute;width:1px;height:1px;margin:-1px;padding:0;overflow:hidden;clip:rect(0 0 0 0);clip-path:inset(50%);white-space:nowrap;border:0}
+  .r-q{height:58px}.r-a{height:34px}.r-s{height:40px}.r-c{height:20px}
+}
+@media (min-width:900px){
+  .fl{grid-template-columns:repeat(4,minmax(0,1fr))}
+  .fs{padding:64px 24px 0 0}
+  .fs:last-child{padding-bottom:0}
+  .conn{left:50px;right:12px;top:18px;bottom:auto;width:auto;height:1px}
+  .conn::before{transform:scaleX(0);transform-origin:0 50%}
+  .flow.in .conn::before{transform:scaleX(1)}
+  .conn u{left:0;top:-1px;width:14px;height:3px;background:linear-gradient(to right,transparent,var(--accent-2))}
+  .flow.in .conn u{animation-name:flowx}
+}
+@media (min-width:1100px){.nle{--lab:150px}}
+@media (min-width:1280px){.rail{display:block}}
+
+/* ================= Tablet ================= */
+@media (min-width:600px){
+  :root{--gut:32px}
+  .hero-media{width:50%}
+  .cta{flex-direction:row;flex-wrap:wrap;align-items:center;gap:14px 24px}
+}
+@media (min-width:700px){
+  .stats{grid-template-columns:repeat(2,minmax(0,1fr));column-gap:40px}
+}
+
+/* ================= Máy tính: lưới 12 cột ================= */
+@media (min-width:900px){
+  :root{--gut:40px}
+  body{font-size:1.0625rem}
+  .dock{display:none}
+  .foot{padding-bottom:22px}
+  .g12{grid-template-columns:repeat(12,minmax(0,1fr));column-gap:24px;row-gap:0}
+  .g12>.hd{grid-column:1/span 4}
+  .g12>.bd{grid-column:6/span 7}
+  .s3{grid-template-rows:auto 1fr}
+  .s3>.hd{grid-row:1}
+  .s3>.bd{grid-row:1/span 2}
+  .s3>.closing{grid-column:1/span 4;grid-row:2;align-self:start;margin-top:36px}
+  .hero{min-height:min(100vh,980px);min-height:min(100svh,980px);display:flex;flex-direction:column}
+  .hero>.wrap{flex:1;display:flex;flex-direction:column}
+  .hero-grid{flex:1;grid-template-columns:repeat(12,minmax(0,1fr));column-gap:24px;align-items:center}
+  .hero-text{grid-column:1/span 7}
+  .hero-media{grid-column:8/span 5;justify-self:end;width:100%;max-width:392px;margin:0}
+  .lead{font-size:1.125rem}
+  .stats{column-gap:56px}
+  .vids{grid-template-columns:repeat(2,minmax(0,1fr));column-gap:32px}
+  .ct{align-items:end}
+  .ct-a{grid-column:1/span 7}
+  .mail{font-size:clamp(1.25rem,2.6vw,2rem)}
+  .ct-b{grid-column:9/span 4;padding:6px 0 6px 28px;border-top:0;border-left:1px solid var(--line)}
+}
+
+/* ================= Giảm chuyển động ================= */
+@media (prefers-reduced-motion:reduce){
+  html{scroll-behavior:auto}
+  .gr i{animation:none}
+  .js .rv{opacity:1;transform:none;transition:none}
+  .js .sh .rule{transform:none;transition:none}
+  .btn,.row .nm,.row svg,.mail{transition:none}
+  .js .lb::after{display:none}
+  .js .ph img{animation:none}
+  .af,.g3,.spot{display:none}
+  .vf{transform:none;transition:none}
+  .js h1 .ln .t{transform:none;animation:none}
+  .js h2.rv{clip-path:none;transition:none}
+  .js .vid .scr{clip-path:none;transition:none}
+  .pic-v i,.pic-v i::after,.pic-h svg{transition:none}
+  .conn::before,.fn{transition:none}
+  .conn::before{transform:none}
+  .conn u{display:none}
+  .clip,.gear li,.mon{transition:none}
+  .g-head,.g-drone,.g-rot,.g-ph{animation:none}
+  .strip-track.run{animation:none}
+}
+</style>
+</head>
+<body>
+<a class="skip" href="#noi-dung">Bỏ qua, đến nội dung chính</a>
+<div class="prog" aria-hidden="true"><i id="prog"></i></div>
+<div class="vig" aria-hidden="true"></div>
+<div class="gr" aria-hidden="true"><i></i></div>
+<div class="spot" aria-hidden="true"></div>
+
+<nav class="rail" aria-label="Mục lục">
+  <ol role="list">
+    <li><a href="#dau"><em>Giới thiệu</em><b>01</b></a></li>
+    <li><a href="#con-so"><em>Con số</em><b>02</b></a></li>
+    <li><a href="#lam-gi"><em>Mình làm gì</em><b>03</b></a></li>
+    <li><a href="#video"><em>Video</em><b>04</b></a></li>
+    <li><a href="#du-an"><em>Dự án</em><b>05</b></a></li>
+    <li><a href="#kenh"><em>Kênh</em><b>06</b></a></li>
+    <li><a href="#thiet-bi"><em>Thiết bị</em><b>07</b></a></li>
+    <li><a href="#danh-cho-ai"><em>Mình giúp được gì</em><b>08</b></a></li>
+    <li><a href="#lienhe"><em>Liên hệ</em><b>09</b></a></li>
+  </ol>
+</nav>
+
+<main id="noi-dung">
+
+<!-- 01 · Đầu trang -->
+<section class="hero" id="dau" aria-labelledby="ten">
+  <div class="lb lb-t" aria-hidden="true"></div>
+  <div class="wrap">
+    <div class="sh" aria-hidden="true"><span class="no">01</span><span class="rule"></span></div>
+    <div class="hero-grid">
+      <div class="hero-text">
+        <h1 id="ten"><span class="ln"><span class="t">Nguyễn Văn</span></span> <span class="ln"><span class="t">Chương</span></span></h1>
+        <p class="tag rv" style="--i:1">Quay, chụp và dựng video bất động sản</p>
+        <p class="lead rv" style="--i:2">Mình làm media tại Công ty cổ phần địa ốc Đại Dương. Mình trực tiếp quay và chụp bằng Pocket và Flycam, rồi dựng thành video để các bạn môi giới xây kênh và tìm khách.</p>
+        <div class="cta rv" style="--i:3">
+          <a class="btn" href="mailto:nguyenvanchuong200396@gmail.com">Gửi email cho mình</a>
+          <p class="zl">Hoặc nhắn Zalo: Chương Nguyễn</p>
+        </div>
+      </div>
+      <div class="hero-media rv" style="--i:2">
+        <div class="vf">
+          <div class="ph">
+            <img src="anh-chan-dung-nen-xam-4x5.jpg" width="1120" height="1400" alt="Chân dung Nguyễn Văn Chương, mặc vest xanh navy, đang mỉm cười" decoding="async" fetchpriority="high">
+            <span class="g3" aria-hidden="true"></span>
+            <span class="af" aria-hidden="true"></span>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="lb lb-b" aria-hidden="true"><div class="wrap"><span class="tc" data-tc>00:01:12:04</span></div></div>
+</section>
+
+<!-- 02 · Con số nổi bật -->
+<section id="con-so" aria-labelledby="h-con-so">
+  <div class="wrap">
+    <div class="sh" aria-hidden="true"><span class="no">02</span><span class="rule"></span></div>
+    <h2 id="h-con-so" class="mb rv">Con số nổi bật</h2>
+    <div class="stats">
+      <div class="stat rv" style="--i:0">
+        <div class="fig" role="img" aria-label="Khoảng 30 video mỗi tháng">
+          <span class="k">Khoảng</span>
+          <span class="big"><span data-count="30">30</span></span>
+          <span class="u">video mỗi tháng</span>
+        </div>
+        <p>Mình làm khoảng 30 video mỗi tháng để các bạn môi giới dùng xây kênh.</p>
+        <div class="pic pic-v" aria-hidden="true"></div>
+        <p class="lg">Mỗi ô là một video trong một tháng.</p>
+      </div>
+      <div class="stat rv" style="--i:1">
+        <div class="fig" role="img" aria-label="Khoảng 9–10 giao dịch trong cả năm">
+          <span class="k">Khoảng</span>
+          <span class="big"><span data-count="9">9</span>–<span data-count="10">10</span></span>
+          <span class="u">giao dịch trong cả năm</span>
+        </div>
+        <p>Khoảng 9–10 giao dịch chuyển nhượng bất động sản trong cả năm đến từ video mình quay và dựng.</p>
+        <div class="pic pic-h" aria-hidden="true"></div>
+        <p class="lg">Mỗi ngôi nhà là một giao dịch. Ngôi nhà nét đứt cho thấy con số có thể là 9 hoặc 10.</p>
+      </div>
+    </div>
+
+    <div class="flow rv">
+      <h3 class="fh">Từ video đến giao dịch</h3>
+      <ol class="fl" role="list">
+        <li class="fs" style="--i:0"><span class="fn" aria-hidden="true">01</span><b>Mình quay, chụp và dựng</b><span class="fd"><span class="hl">Khoảng 30 video mỗi tháng</span> cho các bạn môi giới dùng xây kênh.</span><i class="conn" aria-hidden="true"><u></u></i></li>
+        <li class="fs" style="--i:1"><span class="fn" aria-hidden="true">02</span><b>Môi giới đăng lên kênh</b><span class="fd">Các kênh của bạn môi giới, như Nhà Vin Hay và Đề Nguyễn BĐS.</span><i class="conn" aria-hidden="true"><u></u></i></li>
+        <li class="fs" style="--i:2"><span class="fn" aria-hidden="true">03</span><b>Khách xem và liên hệ</b><span class="fd">Khách xem video rồi liên hệ qua kênh của bạn môi giới.</span><i class="conn" aria-hidden="true"><u></u></i></li>
+        <li class="fs fin" style="--i:3"><span class="fn" aria-hidden="true">04</span><b>Chốt giao dịch</b><span class="fd"><span class="hl">Khoảng 9–10 giao dịch</span> chuyển nhượng bất động sản trong cả năm.</span></li>
+      </ol>
+    </div>
+    <p class="note rv">Khách xem video, liên hệ qua kênh của bạn môi giới, rồi chốt giao dịch. Đây là số liệu ước chừng.</p>
+  </div>
+</section>
+
+<!-- 03 · Mình làm gì -->
+<section id="lam-gi" aria-labelledby="h-lam-gi">
+  <div class="wrap">
+    <div class="sh" aria-hidden="true"><span class="no">03</span><span class="rule"></span></div>
+    <div class="g12 s3">
+      <h2 id="h-lam-gi" class="hd rv">Mình làm gì</h2>
+      <ul class="bd svc" role="list">
+        <li class="rv" style="--i:0"><h3>Quay video</h3><p>Quay bằng DJI Pocket 3 và Flycam, từ cảnh toàn cảnh dự án đến từng căn hộ.</p></li>
+        <li class="rv" style="--i:1"><h3>Chụp ảnh</h3><p>Chụp ảnh bằng Flycam và Pocket.</p></li>
+        <li class="rv" style="--i:2"><h3>Dựng video</h3><p>Dựng bằng CapCut Pro, kèm chỉnh màu và làm âm thanh. Làm được cả video ngắn và video dài.</p></li>
+      </ul>
+      <p class="closing rv">Từ quay đến dựng, mình làm trọn phần hình ảnh.</p>
+    </div>
+
+    <figure class="nle rv" role="group" aria-labelledby="nle-cap">
+      <div class="nle-top" aria-hidden="true">
+        <span class="app">CapCut Pro</span>
+        <span class="now" id="nle-now">Giới thiệu tổng quan dự án</span>
+        <span class="tcx" id="nle-tc">00:00:36:00</span>
+      </div>
+      <div class="nle-body" aria-hidden="true">
+        <div class="labs">
+          <div class="sp"></div>
+          <div class="lab r-q"><svg viewBox="0 0 16 16" focusable="false"><path d="M2 5.5h2.2L5.5 4h5l1.3 1.5H14V12H2zM8 10.4a2.2 2.2 0 1 0 0-4.4 2.2 2.2 0 0 0 0 4.4z" fill="none" stroke="currentColor" stroke-width="1.2" stroke-linejoin="round"/></svg><span>Quay</span></div>
+          <div class="lab r-a"><svg viewBox="0 0 16 16" focusable="false"><path d="M2.5 3.5h11v9h-11zM2.5 11l3.2-3.4 2.6 2.7 1.6-1.6 3.6 3.3" fill="none" stroke="currentColor" stroke-width="1.2" stroke-linejoin="round"/></svg><span>Ảnh</span></div>
+          <div class="lab r-s"><svg viewBox="0 0 16 16" focusable="false"><path d="M2 8h1.2M5 5v6M8 2.8v10.4M11 5v6M13.8 8H14" fill="none" stroke="currentColor" stroke-width="1.3" stroke-linecap="round"/></svg><span>Âm thanh</span></div>
+          <div class="lab r-c"><svg viewBox="0 0 16 16" focusable="false"><circle cx="8" cy="8" r="5.4" fill="none" stroke="currentColor" stroke-width="1.2"/><path d="M8 2.6a5.4 5.4 0 0 1 0 10.8z" fill="currentColor"/></svg><span>Màu</span></div>
+        </div>
+        <div class="lanes" id="nle-lanes">
+          <div class="ruler"></div>
+          <div class="lane r-q"><div class="clips">
+            <span class="clip c1 on" style="--w:20" data-w="20" data-n="Giới thiệu tổng quan dự án"><em>Giới thiệu tổng quan</em></span>
+            <span class="clip c2" style="--w:16" data-w="16" data-n="Flycam toàn cảnh"><em>Flycam toàn cảnh</em></span>
+            <span class="clip c3" style="--w:18" data-w="18" data-n="Review căn hộ"><em>Review căn hộ</em></span>
+            <span class="clip c1" style="--w:17" data-w="17" data-n="Tiến độ xây dựng"><em>Tiến độ xây dựng</em></span>
+            <span class="clip c2" style="--w:12" data-w="12" data-n="Cầu Tứ Liên"><em>Cầu Tứ Liên</em></span>
+            <span class="clip c3" style="--w:17" data-w="17" data-n="Tiến độ dự án theo từng tháng"><em>Tiến độ theo tháng</em></span>
+          </div></div>
+          <div class="lane r-a">
+            <i class="still" style="--x:4%"></i><i class="still" style="--x:21%"></i><i class="still" style="--x:39%"></i><i class="still" style="--x:56%"></i><i class="still" style="--x:72%"></i><i class="still" style="--x:89%"></i>
+          </div>
+          <div class="lane r-s wave">
+            <svg class="b" viewBox="0 0 480 36" preserveAspectRatio="none" focusable="false"><path d="M2 8.6V27.4M6 8.0V28.0M10 6.0V30.0M14 7.7V28.3M18 7.0V29.0M22 8.1V27.9M26 9.0V27.0M30 7.6V28.4M34 7.9V28.1M38 6.0V30.0M42 6.7V29.3M46 7.0V29.0M50 7.1V28.9M54 7.5V28.5M58 10.1V25.9M62 10.7V25.3M66 10.5V25.5M70 10.5V25.5M74 11.7V24.3M78 11.5V24.5M82 9.5V26.5M86 10.3V25.7M90 8.4V27.6M94 9.5V26.5M98 9.8V26.2M102 9.5V26.5M106 8.2V27.8M110 5.6V30.4M114 6.2V29.8M118 4.4V31.6M122 4.5V31.5M126 6.3V29.7M130 7.1V28.9M134 9.2V26.8M138 9.6V26.4M142 9.2V26.8M146 8.0V28.0M150 8.6V27.4M154 9.4V26.6M158 9.9V26.1M162 11.2V24.8M166 12.2V23.8M170 11.0V25.0M174 10.6V25.4M178 10.6V25.4M182 9.0V27.0M186 7.7V28.3M190 5.6V30.4M194 5.3V30.7M198 6.7V29.3M202 5.5V30.5M206 8.5V27.5M210 8.1V27.9M214 7.1V28.9M218 7.8V28.2M222 6.2V29.8M226 7.1V28.9M230 5.7V30.3M234 6.6V29.4M238 8.4V27.6M242 9.1V26.9M246 10.9V25.1M250 10.8V25.2M254 11.5V24.5M258 11.6V24.4M262 10.7V25.3M266 9.0V27.0M270 7.9V28.1M274 8.6V27.4M278 8.3V27.7M282 9.7V26.3M286 8.1V27.9M290 7.3V28.7M294 5.1V30.9M298 4.2V31.8M302 5.3V30.7M306 5.3V30.7M310 5.5V30.5M314 8.5V27.5M318 8.4V27.6M322 9.6V26.4M326 9.8V26.2M330 9.8V26.2M334 8.6V27.4M338 10.4V25.6M342 11.1V24.9M346 11.9V24.1M350 11.0V25.0M354 11.5V24.5M358 10.6V25.4M362 9.7V26.3M366 8.0V28.0M370 6.6V29.4M374 5.2V30.8M378 6.2V29.8M382 5.9V30.1M386 6.8V29.2M390 6.4V29.6M394 6.9V29.1M398 8.7V27.3M402 8.1V27.9M406 7.3V28.7M410 7.0V29.0M414 6.7V29.3M418 7.4V28.6M422 9.4V26.6M426 10.9V25.1M430 11.1V24.9M434 11.7V24.3M438 11.9V24.1M442 10.5V25.5M446 9.7V26.3M450 8.9V27.1M454 7.9V28.1M458 7.5V28.5M462 9.2V26.8M466 7.6V28.4M470 7.7V28.3M474 6.7V29.3M478 5.6V30.4"/></svg>
+            <svg class="pl" viewBox="0 0 480 36" preserveAspectRatio="none" focusable="false"><path d="M2 8.6V27.4M6 8.0V28.0M10 6.0V30.0M14 7.7V28.3M18 7.0V29.0M22 8.1V27.9M26 9.0V27.0M30 7.6V28.4M34 7.9V28.1M38 6.0V30.0M42 6.7V29.3M46 7.0V29.0M50 7.1V28.9M54 7.5V28.5M58 10.1V25.9M62 10.7V25.3M66 10.5V25.5M70 10.5V25.5M74 11.7V24.3M78 11.5V24.5M82 9.5V26.5M86 10.3V25.7M90 8.4V27.6M94 9.5V26.5M98 9.8V26.2M102 9.5V26.5M106 8.2V27.8M110 5.6V30.4M114 6.2V29.8M118 4.4V31.6M122 4.5V31.5M126 6.3V29.7M130 7.1V28.9M134 9.2V26.8M138 9.6V26.4M142 9.2V26.8M146 8.0V28.0M150 8.6V27.4M154 9.4V26.6M158 9.9V26.1M162 11.2V24.8M166 12.2V23.8M170 11.0V25.0M174 10.6V25.4M178 10.6V25.4M182 9.0V27.0M186 7.7V28.3M190 5.6V30.4M194 5.3V30.7M198 6.7V29.3M202 5.5V30.5M206 8.5V27.5M210 8.1V27.9M214 7.1V28.9M218 7.8V28.2M222 6.2V29.8M226 7.1V28.9M230 5.7V30.3M234 6.6V29.4M238 8.4V27.6M242 9.1V26.9M246 10.9V25.1M250 10.8V25.2M254 11.5V24.5M258 11.6V24.4M262 10.7V25.3M266 9.0V27.0M270 7.9V28.1M274 8.6V27.4M278 8.3V27.7M282 9.7V26.3M286 8.1V27.9M290 7.3V28.7M294 5.1V30.9M298 4.2V31.8M302 5.3V30.7M306 5.3V30.7M310 5.5V30.5M314 8.5V27.5M318 8.4V27.6M322 9.6V26.4M326 9.8V26.2M330 9.8V26.2M334 8.6V27.4M338 10.4V25.6M342 11.1V24.9M346 11.9V24.1M350 11.0V25.0M354 11.5V24.5M358 10.6V25.4M362 9.7V26.3M366 8.0V28.0M370 6.6V29.4M374 5.2V30.8M378 6.2V29.8M382 5.9V30.1M386 6.8V29.2M390 6.4V29.6M394 6.9V29.1M398 8.7V27.3M402 8.1V27.9M406 7.3V28.7M410 7.0V29.0M414 6.7V29.3M418 7.4V28.6M422 9.4V26.6M426 10.9V25.1M430 11.1V24.9M434 11.7V24.3M438 11.9V24.1M442 10.5V25.5M446 9.7V26.3M450 8.9V27.1M454 7.9V28.1M458 7.5V28.5M462 9.2V26.8M466 7.6V28.4M470 7.7V28.3M474 6.7V29.3M478 5.6V30.4"/></svg>
+          </div>
+          <div class="lane r-c"><div class="grade"></div></div>
+          <i class="head"></i>
+        </div>
+      </div>
+      <ul class="leg" role="list">
+        <li><i class="c1"></i>Giới thiệu tổng quan dự án</li>
+        <li><i class="c2"></i>Flycam toàn cảnh</li>
+        <li><i class="c3"></i>Review căn hộ</li>
+        <li><i class="c1"></i>Tiến độ xây dựng</li>
+        <li><i class="c2"></i>Cầu Tứ Liên</li>
+        <li><i class="c3"></i>Tiến độ theo từng tháng</li>
+      </ul>
+      <figcaption id="nle-cap" class="cap">Minh họa cách mình ghép video, ảnh, âm thanh và màu trên một dòng thời gian dựng. Kéo ngang trên hình để tua. Chỉ mang tính minh họa.</figcaption>
+    </figure>
+  </div>
+</section>
+
+<!-- 04 · Video tiêu biểu -->
+<section id="video" aria-labelledby="h-video">
+  <div class="wrap">
+    <div class="sh" aria-hidden="true"><span class="no">04</span><span class="rule"></span></div>
+    <h2 id="h-video" class="mb rv">Video tiêu biểu</h2>
+    <div class="vids">
+      <div class="vid rv" style="--i:0">
+        <div class="mon"><div class="scr"><iframe src="https://drive.google.com/file/d/1WtjJ60gXjo-3VTSFdOXdklqQnItxFM4u/preview" title="Vinhomes Cổ Loa: biệt thự đơn lập góc" allow="autoplay" allowfullscreen loading="lazy"></iframe></div></div>
+        <h3 class="vt">Vinhomes Cổ Loa: biệt thự đơn lập góc</h3>
+        <a class="btn btn-ghost" href="https://drive.google.com/file/d/1WtjJ60gXjo-3VTSFdOXdklqQnItxFM4u/view" target="_blank" rel="noopener">Mở video trong tab mới<svg viewBox="0 0 16 16" aria-hidden="true" focusable="false"><path d="M5 11 11 5M6 5h5v5" fill="none" stroke="currentColor" stroke-width="1.5"/></svg></a>
+      </div>
+      <div class="vid rv" style="--i:1">
+        <div class="mon"><div class="scr"><iframe src="https://drive.google.com/file/d/155jABUz5hSKe-3S351IdL_SWzI6pJUk3/preview" title="Vinhomes Cổ Loa: căn liền kề 80m²" allow="autoplay" allowfullscreen loading="lazy"></iframe></div></div>
+        <h3 class="vt">Vinhomes Cổ Loa: căn liền kề 80m²</h3>
+        <a class="btn btn-ghost" href="https://drive.google.com/file/d/155jABUz5hSKe-3S351IdL_SWzI6pJUk3/view" target="_blank" rel="noopener">Mở video trong tab mới<svg viewBox="0 0 16 16" aria-hidden="true" focusable="false"><path d="M5 11 11 5M6 5h5v5" fill="none" stroke="currentColor" stroke-width="1.5"/></svg></a>
+      </div>
+    </div>
+    <p class="note rv">Video do mình quay Pocket, quay Flycam và dựng.</p>
+  </div>
+</section>
+
+<!-- 05 · Dự án -->
+<section id="du-an" aria-labelledby="h-du-an">
+  <div class="wrap">
+    <div class="sh" aria-hidden="true"><span class="no">05</span><span class="rule"></span></div>
+    <div class="g12">
+      <h2 id="h-du-an" class="hd rv">Dự án mình đã làm</h2>
+      <div class="bd">
+        <div class="pj rv" style="--i:0">
+          <h3>Vinhomes Cổ Loa</h3>
+          <p>Mình làm trọn phần hình ảnh: quay Pocket, quay Flycam, dựng.</p>
+          <p>Các loại video: giới thiệu tổng quan dự án, flycam toàn cảnh, review căn hộ, tiến độ xây dựng, cầu Tứ Liên, tiến độ dự án theo từng tháng. Có cả video ngắn và video dài.</p>
+        </div>
+        <div class="pj rv" style="--i:1">
+          <h3>Vinhomes Ocean Park 2</h3>
+          <p>Làm những việc tương tự: quay Pocket, quay Flycam và dựng.</p>
+        </div>
+      </div>
+    </div>
+
+    <p class="strip-lab rv" aria-hidden="true">Vinhomes Cổ Loa · các loại video</p>
+    <div class="strip rv" aria-hidden="true">
+      <div class="strip-track">
+        <div class="frame"><small>01</small><b>Giới thiệu tổng quan dự án</b></div>
+        <div class="frame"><small>02</small><b>Flycam toàn cảnh</b></div>
+        <div class="frame"><small>03</small><b>Review căn hộ</b></div>
+        <div class="frame"><small>04</small><b>Tiến độ xây dựng</b></div>
+        <div class="frame"><small>05</small><b>Cầu Tứ Liên</b></div>
+        <div class="frame"><small>06</small><b>Tiến độ dự án theo từng tháng</b></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- 06 · Kênh đã đồng hành -->
+<section id="kenh" aria-labelledby="h-kenh">
+  <div class="wrap">
+    <div class="sh" aria-hidden="true"><span class="no">06</span><span class="rule"></span></div>
+    <div class="g12">
+      <h2 id="h-kenh" class="hd rv">Video của mình có mặt trên</h2>
+      <div class="bd">
+        <div class="rows">
+          <a class="row rv" style="--i:0" href="https://www.youtube.com/@NhaVinHay" target="_blank" rel="noopener"><span class="nm">Nhà Vin Hay</span><span class="sr">(mở trong tab mới)</span><svg viewBox="0 0 16 16" aria-hidden="true" focusable="false"><path d="M5 11 11 5M6 5h5v5" fill="none" stroke="currentColor" stroke-width="1.5"/></svg></a>
+          <a class="row rv" style="--i:1" href="https://www.youtube.com/@%C4%90%E1%BB%81Nguy%E1%BB%85nB%C4%90S-89" target="_blank" rel="noopener"><span class="nm">Đề Nguyễn BĐS</span><span class="sr">(mở trong tab mới)</span><svg viewBox="0 0 16 16" aria-hidden="true" focusable="false"><path d="M5 11 11 5M6 5h5v5" fill="none" stroke="currentColor" stroke-width="1.5"/></svg></a>
+        </div>
+        <p class="note rv">Các kênh của bạn môi giới, nơi video mình quay và dựng được đăng.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- 07 · Thiết bị và phần mềm -->
+<section id="thiet-bi" aria-labelledby="h-thiet-bi">
+  <div class="wrap">
+    <div class="sh" aria-hidden="true"><span class="no">07</span><span class="rule"></span></div>
+    <div class="g12">
+      <h2 id="h-thiet-bi" class="hd rv">Thiết bị và phần mềm</h2>
+      <ul class="bd gear" role="list">
+        <li class="rv" style="--i:0">
+          <svg class="gi" viewBox="0 0 64 64" aria-hidden="true" focusable="false"><rect x="25" y="30" width="14" height="28" rx="6"/><rect x="28.5" y="36" width="7" height="9" rx="1.5"/><path d="M32 30v-8"/><g class="g-head"><rect x="21" y="8" width="22" height="14" rx="5"/><circle cx="32" cy="15" r="3.6"/></g></svg>
+          <span class="n">DJI Pocket 3</span><span class="d">Quay video, chụp ảnh</span>
+        </li>
+        <li class="rv" style="--i:1">
+          <svg class="gi" viewBox="0 0 64 64" aria-hidden="true" focusable="false"><g class="g-drone"><rect x="25" y="27" width="14" height="10" rx="3.5"/><path d="M25.5 29 14 20M38.5 29 50 20M25.5 35 14 44M38.5 35 50 44"/><ellipse class="g-rot" cx="12" cy="18.5" rx="9" ry="2.2"/><ellipse class="g-rot" cx="52" cy="18.5" rx="9" ry="2.2"/><ellipse class="g-rot" cx="12" cy="45.5" rx="9" ry="2.2"/><ellipse class="g-rot" cx="52" cy="45.5" rx="9" ry="2.2"/><circle cx="32" cy="42" r="3"/></g></svg>
+          <span class="n">Flycam DJI i3</span><span class="d">Quay video, chụp ảnh</span>
+        </li>
+        <li class="rv" style="--i:2">
+          <svg class="gi" viewBox="0 0 64 64" aria-hidden="true" focusable="false"><rect x="8" y="14" width="22" height="9" rx="2"/><rect x="34" y="14" width="22" height="9" rx="2"/><rect x="8" y="27" width="34" height="9" rx="2"/><rect x="46" y="27" width="10" height="9" rx="2"/><path d="M8 49h7l3-5 4 10 4-12 4 8 3-4h23"/><g class="g-ph"><path d="M24 8v48"/><path d="M20 8h8l-4 5z" fill="currentColor"/></g></svg>
+          <span class="n">CapCut Pro</span><span class="d">Dựng, chỉnh màu, làm âm thanh</span>
+        </li>
+      </ul>
+    </div>
+  </div>
+</section>
+
+<!-- 08 · Dành cho ai -->
+<section id="danh-cho-ai" aria-labelledby="h-danh-cho-ai">
+  <div class="wrap">
+    <div class="sh" aria-hidden="true"><span class="no">08</span><span class="rule"></span></div>
+    <div class="g12">
+      <h2 id="h-danh-cho-ai" class="hd rv">Mình có thể giúp bạn</h2>
+      <ul class="bd fit" role="list">
+        <li class="pri rv" style="--i:0">Bạn đang xây kênh bất động sản và cần video đều mỗi tháng.</li>
+        <li class="pri rv" style="--i:1">Bạn cần thuê người quay và dựng video dự án, căn hộ, flycam toàn cảnh.</li>
+        <li class="sec rv" style="--i:2">Ngoài ra, nếu bạn là nhà tuyển dụng hoặc sàn môi giới bất động sản, rất vui được trao đổi.</li>
+      </ul>
+    </div>
+  </div>
+</section>
+
+<!-- 09 · Liên hệ -->
+<section class="contact" id="lienhe" aria-labelledby="h-lienhe">
+  <div class="wrap">
+    <div class="sh" aria-hidden="true"><span class="no">09</span><span class="rule"></span></div>
+    <div class="g12 ct">
+      <div class="ct-a rv">
+        <h2 id="h-lienhe">Liên hệ với mình</h2>
+        <a class="mail" href="mailto:nguyenvanchuong200396@gmail.com">nguyenvanchuong200396@gmail.com</a>
+      </div>
+      <div class="ct-b rv" style="--i:1">
+        <p class="zname">Zalo: Chương Nguyễn</p>
+        <p class="zhint">Mở Zalo, tìm tên này để nhắn mình.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+</main>
+
+<footer class="foot">
+  <div class="wrap">
+    <span>© Nguyễn Văn Chương</span>
+    <span class="tc" aria-hidden="true">00:02:00:00</span>
+  </div>
+</footer>
+
+<div class="dock"><a class="btn" href="mailto:nguyenvanchuong200396@gmail.com">Gửi email</a></div>
+
+<script>
+(function(){
+  var d=document,root=d.documentElement;
+  function $(s,c){return (c||d).querySelector(s);}
+  function $$(s,c){return [].slice.call((c||d).querySelectorAll(s));}
+  function mq(q){return !!(window.matchMedia&&window.matchMedia(q).matches);}
+  var items=$$('.rv,.sh'),nums=$$('[data-count]'),stats=$$('.stat');
+  var calm=mq('(prefers-reduced-motion: reduce)');
+  var fine=mq('(hover: hover) and (pointer: fine)');
+  function showAll(){items.forEach(function(e){e.classList.add('in');});}
+  function finals(){nums.forEach(function(n){n.textContent=n.getAttribute('data-count');});}
+  function litAll(){stats.forEach(function(s){s.classList.add('on');s.setAttribute('data-on','1');});}
+  window.addEventListener('beforeprint',function(){showAll();finals();litAll();});
+
+  /* biểu đồ ký hiệu: 30 khung phim (30 video mỗi tháng) và 10 ngôi nhà (9–10 giao dịch) */
+  function build(){
+    var pv=$('.pic-v');
+    if(pv&&!pv.children.length){
+      for(var k=0;k<30;k++){var c=d.createElement('i');c.style.setProperty('--k',k);pv.appendChild(c);}
+    }
+    var ph=$('.pic-h');
+    if(ph&&!ph.children.length){
+      var home='<svg viewBox="0 0 24 24" focusable="false"><path class="h" d="M3.5 12.2 12 4.8l8.5 7.4V20a.8.8 0 0 1-.8.8H15v-5.4H9v5.4H4.3a.8.8 0 0 1-.8-.8z"/></svg>',html='';
+      for(var j=0;j<10;j++){html+=home.replace('<svg ','<svg style="--k:'+j+'" '+(j===9?'class="est" ':''));}
+      ph.innerHTML=html;
+    }
+  }
+
+  /* dòng thời gian dựng phim: đầu phát chạy qua từng đoạn, kéo ngang để tua */
+  function initNle(){
+    var el=$('.nle'),lanes=$('#nle-lanes'),nowEl=$('#nle-now'),tcEl=$('#nle-tc');
+    if(!el||!lanes||!nowEl||!tcEl)return null;
+    var clips=$$('.clip',el),bounds=[],acc=0;
+    clips.forEach(function(c){var w=parseFloat(c.getAttribute('data-w'))/100;bounds.push(acc+w);acc+=w;});
+    var p=.3,cur=-1,on=false,tok=0,scrub=false,hold=0,LOOP=18000;
+    function pad(n){return n<10?'0'+n:''+n;}
+    function set(v){
+      p=v<0?0:(v>1?1:v);
+      el.style.setProperty('--p',p.toFixed(4));
+      var idx=clips.length-1;
+      for(var i=0;i<bounds.length;i++){if(p<bounds[i]){idx=i;break;}}
+      if(idx!==cur){
+        if(cur>=0)clips[cur].classList.remove('on');
+        clips[idx].classList.add('on');cur=idx;
+        nowEl.textContent=clips[idx].getAttribute('data-n');
+      }
+      var s=p*120;
+      tcEl.textContent='00:'+pad(Math.floor(s/60))+':'+pad(Math.floor(s%60))+':'+pad(Math.floor((s%1)*24));
+    }
+    function loop(my){
+      var last=0;
+      function f(ts){
+        if(!on||my!==tok)return;
+        var dt=last?ts-last:0;last=ts;
+        if(!scrub&&ts>=hold){var v=p+dt/LOOP;set(v>=1?v-1:v);}
+        window.requestAnimationFrame(f);
+      }
+      window.requestAnimationFrame(f);
+    }
+    function fromEvent(e){var r=lanes.getBoundingClientRect();set((e.clientX-r.left)/Math.max(r.width,1));}
+    lanes.addEventListener('pointerdown',function(e){scrub=true;try{lanes.setPointerCapture(e.pointerId);}catch(x){}fromEvent(e);});
+    lanes.addEventListener('pointermove',function(e){if(scrub)fromEvent(e);});
+    function end(){if(scrub){scrub=false;hold=(window.performance&&performance.now?performance.now():0)+2500;}}
+    lanes.addEventListener('pointerup',end);
+    lanes.addEventListener('pointercancel',end);
+    set(p);
+    return{
+      still:function(){set(.3);},
+      run:function(v){if(v){if(!on){on=true;loop(++tok);}}else{on=false;tok++;}}
+    };
+  }
+
+  try{
+    build();
+    var nle=initNle();
+
+    /* thanh tiến độ cuộn, mục lục bên phải, ảnh chân dung trượt nhẹ khi cuộn */
+    var bar=$('#prog'),queued=false,vf=$('.vf'),secs=$$('main > section'),links=$$('.rail a'),curSec=-1;
+    function paint(){
+      queued=false;
+      var max=root.scrollHeight-window.innerHeight;
+      var y=window.pageYOffset||root.scrollTop||0;
+      var p=max>0?Math.min(1,Math.max(0,y/max)):0;
+      bar.style.transform='scaleX('+p.toFixed(4)+')';
+      if(links.length&&secs.length){
+        var vh=window.innerHeight,idx=0;
+        for(var i=0;i<secs.length;i++){if(secs[i].getBoundingClientRect().top<=vh*.42)idx=i;}
+        if(idx>=links.length)idx=links.length-1;
+        if(idx!==curSec){
+          if(curSec>=0)links[curSec].removeAttribute('aria-current');
+          links[idx].setAttribute('aria-current','true');curSec=idx;
+        }
+      }
+      if(vf&&!calm&&y<window.innerHeight*1.3){vf.style.setProperty('--py',(y*-.045).toFixed(1)+'px');}
+    }
+    function queue(){if(!queued){queued=true;window.requestAnimationFrame(paint);}}
+    paint();
+    window.addEventListener('scroll',queue,{passive:true});
+    window.addEventListener('resize',queue);
+    window.addEventListener('load',queue);
+
+    if(calm||!('IntersectionObserver' in window)){showAll();litAll();if(nle)nle.still();return;}
+
+    /* hiện dần khi cuộn tới */
+    var io=new IntersectionObserver(function(es){
+      es.forEach(function(x){if(x.isIntersecting){x.target.classList.add('in');io.unobserve(x.target);}});
+    },{threshold:.12,rootMargin:'0px 0px -6% 0px'});
+    items.forEach(function(e){io.observe(e);});
+
+    /* đếm lên nhẹ nhàng, easeOutCubic ~1,4 giây, kết thúc đúng số thật; biểu đồ ký hiệu sáng dần cùng nhịp */
+    nums.forEach(function(n){n.textContent='0';});
+    function run(el){
+      var to=parseInt(el.getAttribute('data-count'),10),t0=null,dur=1400;
+      function step(t){
+        if(t0===null)t0=t;
+        var p=Math.min(1,(t-t0)/dur),e=1-Math.pow(1-p,3);
+        el.textContent=String(Math.round(to*e));
+        if(p<1)window.requestAnimationFrame(step);else el.textContent=String(to);
+      }
+      window.requestAnimationFrame(step);
+    }
+    function startStat(s){
+      if(s.getAttribute('data-on'))return;
+      s.setAttribute('data-on','1');
+      s.classList.add('on');
+      $$('[data-count]',s).forEach(run);
+    }
+    var cio=new IntersectionObserver(function(es){
+      es.forEach(function(x){if(x.isIntersecting){startStat(x.target);cio.unobserve(x.target);}});
+    },{threshold:.45});
+    stats.forEach(function(s){cio.observe(s);});
+
+    /* dòng thời gian dựng phim chỉ chạy khi đang nằm trong màn hình */
+    if(nle){
+      var nio=new IntersectionObserver(function(es){es.forEach(function(x){nle.run(x.isIntersecting);});},{threshold:.2});
+      nio.observe($('.nle'));
+    }
+
+    /* dải phim các loại video: nhân đôi để chạy vòng liền mạch */
+    var tr=$('.strip-track');
+    if(tr&&tr.children.length&&!tr.getAttribute('data-c')){
+      tr.setAttribute('data-c','1');
+      $$('.frame',tr).forEach(function(f){tr.appendChild(f.cloneNode(true));});
+      tr.classList.add('run');
+    }
+
+    /* chuột: vệt sáng nhẹ và ảnh chân dung nghiêng rất nhẹ theo con trỏ (chỉ máy có chuột) */
+    if(fine){
+      var spot=$('.spot'),hm=$('.hero-media'),mx=0,my=0,sq=false;
+      function moveSpot(){sq=false;if(spot)spot.style.transform='translate3d('+mx+'px,'+my+'px,0)';}
+      function tilt(e){
+        if(!vf||!hm)return;
+        var r=hm.getBoundingClientRect();
+        if(r.bottom<0||r.top>window.innerHeight)return;
+        var dx=(e.clientX-(r.left+r.width/2))/Math.max(window.innerWidth/2,1);
+        var dy=(e.clientY-(r.top+r.height/2))/Math.max(window.innerHeight/2,1);
+        dx=Math.max(-1,Math.min(1,dx));dy=Math.max(-1,Math.min(1,dy));
+        vf.style.setProperty('--ry',(dx*4).toFixed(2)+'deg');
+        vf.style.setProperty('--rx',(dy*-3.5).toFixed(2)+'deg');
+      }
+      function resetTilt(){if(vf){vf.style.setProperty('--ry','0deg');vf.style.setProperty('--rx','0deg');}}
+      d.addEventListener('pointermove',function(e){
+        if(e.pointerType&&e.pointerType!=='mouse')return;
+        mx=e.clientX;my=e.clientY;
+        if(spot)spot.classList.add('on');
+        if(!sq){sq=true;window.requestAnimationFrame(moveSpot);}
+        tilt(e);
+      },{passive:true});
+      root.addEventListener('mouseleave',function(){if(spot)spot.classList.remove('on');resetTilt();});
+    }
+
+    /* timecode nhỏ ở dải letterbox: chạy chậm, mỗi giây một nhịp */
+    var tc=$('[data-tc]');
+    if(tc){
+      var t=0,pad=function(n){return n<10?'0'+n:''+n;};
+      window.setInterval(function(){
+        if(d.hidden)return;
+        t++;
+        var s=72+t;
+        tc.textContent=pad(Math.floor(s/3600))+':'+pad(Math.floor(s%3600/60))+':'+pad(s%60)+':04';
+      },1000);
+    }
+
+    /* an toàn: không để nội dung đang nằm trong màn hình bị ẩn hay số kẹt ở 0 */
+    window.setTimeout(function(){
+      var vh=window.innerHeight;
+      items.forEach(function(e){var r=e.getBoundingClientRect();if(r.top<vh&&r.bottom>0)e.classList.add('in');});
+      stats.forEach(function(s){var r=s.getBoundingClientRect();if(r.top<vh&&r.bottom>0)startStat(s);});
+    },2500);
+  }catch(err){showAll();finals();litAll();}
+})();
+</script>
+</body>
+</html>
